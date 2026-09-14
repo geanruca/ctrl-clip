@@ -162,7 +162,7 @@ npx skills add geanruca/ctrl-clip
 bash ~/.claude/skills/ctrl-clip/clip-setup.sh --claude-md   # register the handler + autoload rule
 ```
 
-Without the second line, Claude still registers the handler the first time it uses the
+The `skills` CLI needs Node.js 20.12 or newer. Without the second line, Claude still registers the handler the first time it uses the
 skill. But then ctrl-clip only kicks in when Claude decides to invoke it, instead of on every
 draft.
 
@@ -228,6 +228,26 @@ calling the handler and running the `curl … | bash` installer **from each shel
 syntax**:
 
 <!-- shells-table:begin -->
+| Shell | Version | pipe → clip.sh | clip.sh FILE | Ctrl+click handler | curl … \| bash install |
+|---|---|:-:|:-:|:-:|:-:|
+| bash | 5.2.21 | ✅ | ✅ | ✅ | ✅ |
+| zsh | 5.9 | ✅ | ✅ | ✅ | ✅ |
+| fish | 3.7.0 | ✅ | ✅ | ✅ | ✅ |
+| dash (sh) | 0.5.12 | ✅ | ✅ | ✅ | ✅ |
+| ksh | 93u+m/1.0.8 | ✅ | ✅ | ✅ | ✅ |
+| mksh | R59 | ✅ | ✅ | ✅ | ✅ |
+| tcsh | 6.24.10 | ✅ | ✅ | ✅ | ✅ |
+| nushell | 0.115.1 | ✅ | ✅ | ✅ | ✅ |
+| PowerShell (pwsh) | 7.6.5 | ✅ | ✅ | ✅ | ✅ |
+| elvish | 0.20.1 | ✅ | ✅ | ✅ | ✅ |
+| xonsh | 0.24.2 | ✅ | ✅ | ✅ | ✅ |
+
+Each cell runs the shell's own syntax, for example `cat $DRAFT | $CLIP` in fish,
+`open --raw $env.DRAFT | ^$env.CLIP` in nushell and `Get-Content -Raw $env:DRAFT | & $env:CLIP`
+in PowerShell. The clipboard must then match the expected clean text byte for byte
+([`tests/shells.sh`](tests/shells.sh)). The table is the output of the `shell compatibility`
+CI job on Ubuntu, which also writes it to the job summary.
+
 <!-- shells-table:end -->
 
 The `clip.sh` cleaner also runs on macOS (BSD `sed`, bash 3.2, zsh) with `pbcopy`. The

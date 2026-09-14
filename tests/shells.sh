@@ -137,7 +137,7 @@ check() {
   fi
 }
 
-table="| Shell | Version | \`draft | clip.sh\` | \`clip.sh draft\` | Ctrl+click handler | \`curl … | bash\` install |"
+table='| Shell | Version | pipe → clip.sh | clip.sh FILE | Ctrl+click handler | curl … \| bash install |'
 table+=$'\n|---|---|:-:|:-:|:-:|:-:|'
 failures=0
 required=" ${REQUIRED_SHELLS:-} "

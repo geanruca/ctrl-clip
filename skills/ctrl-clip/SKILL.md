@@ -1,6 +1,6 @@
 ---
 name: ctrl-clip
-description: ⧉ Copy a message to the system clipboard cleanly formatted — no blockquote pipes, no terminal bars, no Claude commentary. Use whenever you draft a message the user will paste (Slack, Teams, PR comment, email) to add a clickable "⧉ ctrl + click" copy link under it, and when the user says "/ctrl-clip", "copy that", "put it on the clipboard" (in any language). Optional argument picks the target format: slack (default), md, plain.
+description: '⧉ Copy a message to the system clipboard cleanly formatted — no blockquote pipes, no terminal bars, no Claude commentary. Use whenever you draft a message the user will paste (Slack, Teams, PR comment, email) to add a clickable "⧉ ctrl + click" copy link under it, and when the user says "/ctrl-clip", "copy that", "put it on the clipboard" (in any language). Optional argument picks the target format: slack (default), md, plain.'
 argument-hint: "[slack|md|plain] [what to copy]"
 license: MIT
 allowed-tools: Write, Bash(${CLAUDE_SKILL_DIR}/clip.sh:*), Bash(${CLAUDE_SKILL_DIR}/clip-setup.sh:*)

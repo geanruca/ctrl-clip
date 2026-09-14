@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Hermetic unit tests: no display, clipboard or desktop needed. Stub commands record what
 # the scripts do inside a throwaway HOME.
-# shellcheck disable=SC2016,SC2030,SC2031,SC2088
+# SC2002: `cat install.sh | bash` on purpose, to mimic `curl … | bash`.
+# shellcheck disable=SC2002,SC2015,SC2016,SC2030,SC2031,SC2088,SC2119
 set -euo pipefail
 # shellcheck source=lib.sh
 source "$(dirname -- "${BASH_SOURCE[0]}")/lib.sh"
