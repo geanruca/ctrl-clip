@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - run: make lint
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make unit
+
+  shells:
+    name: shell compatibility
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shells (pwsh is preinstalled on the runner)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh fish ksh mksh tcsh elvish
+          pipx install xonsh
+      - uses: hustcer/setup-nu@v3
+        with:
+          version: "*"
+      - name: Run the shell matrix
+        env:
+          REQUIRED_SHELLS: bash zsh fish dash ksh mksh tcsh nu pwsh elvish xonsh
+        run: make shells
+
+  integration:
+    name: integration (xvfb, real xdg-open + xclip)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xclip xdg-utils shared-mime-info desktop-file-utils libnotify-bin libfile-mimeinfo-perl
+      - run: xvfb-run -a make integration
+
+  macos:
+    name: macOS (BSD sed, bash 3.2, zsh)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: /bin/bash tests/macos.sh

@@ -1,0 +1,16 @@
+{
+  "description": "Autoload: register the Ctrl+click handler and load the 'Drafts to paste' rule at every session start.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/skills/ctrl-clip/clip-setup.sh\" --hook",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

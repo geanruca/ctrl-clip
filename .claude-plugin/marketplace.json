@@ -1,0 +1,27 @@
+{
+  "name": "ctrl-clip",
+  "owner": {
+    "name": "geanruca",
+    "url": "https://github.com/geanruca"
+  },
+  "metadata": {
+    "description": "Clean clipboard copies of Claude Code drafts with one Ctrl+click.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "ctrl-clip",
+      "source": "./",
+      "description": "⧉ Ctrl+click to copy Claude's drafts to the clipboard cleanly — no │ pipes, no > markers, no commentary.",
+      "version": "1.0.0",
+      "author": {
+        "name": "geanruca"
+      },
+      "homepage": "https://github.com/geanruca/ctrl-clip",
+      "repository": "https://github.com/geanruca/ctrl-clip",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["clipboard", "copy", "slack", "drafts", "xdg-open", "linux"]
+    }
+  ]
+}

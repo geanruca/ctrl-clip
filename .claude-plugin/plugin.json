@@ -1,0 +1,13 @@
+{
+  "name": "ctrl-clip",
+  "version": "1.0.0",
+  "description": "⧉ Ctrl+click to copy Claude's drafts to the clipboard cleanly — no │ pipes, no > markers, no commentary.",
+  "author": {
+    "name": "geanruca",
+    "url": "https://github.com/geanruca"
+  },
+  "homepage": "https://github.com/geanruca/ctrl-clip",
+  "repository": "https://github.com/geanruca/ctrl-clip",
+  "license": "MIT",
+  "keywords": ["clipboard", "copy", "slack", "drafts", "xdg-open", "linux"]
+}

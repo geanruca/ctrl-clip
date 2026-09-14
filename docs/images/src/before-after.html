@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ctrl-clip - before/after</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0a0c10;
+    --bg-1:#12151c;
+    --panel-bg:rgba(255,255,255,0.03);
+    --panel-border:rgba(255,255,255,0.08);
+    --term-bg:#0b0e14;
+    --term-border:#262b36;
+    --term-titlebar:#1a1e27;
+    --text-dim:#5b6472;
+    --text-mid:#9aa4b2;
+    --text-bright:#eef1f5;
+    --red:#ef4444;
+    --red-soft:rgba(239,68,68,0.12);
+    --green:#22c55e;
+    --green-soft:rgba(34,197,94,0.12);
+    --amber:#e8a33d;
+    --link-blue:#5b9dff;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    width:1600px;height:900px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(232,163,61,0.07), transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(91,157,255,0.06), transparent 45%),
+      linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    font-family:'Inter', sans-serif;
+    color:var(--text-bright);
+  }
+  .stage{
+    width:1600px;height:900px;
+    box-sizing:border-box;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    padding:34px 56px 30px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:22px;
+  }
+  header h1{
+    margin:0 0 8px;
+    font-size:38px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    color:var(--text-bright);
+  }
+  header h1 .pipe{
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+  }
+  header p{
+    margin:0;
+    font-size:18px;
+    color:var(--text-mid);
+    font-weight:500;
+  }
+  header p .brand{
+    color:var(--amber);
+    font-weight:700;
+  }
+  .panels{
+    flex:1;
+    display:flex;
+    gap:36px;
+    min-height:0;
+  }
+  .panel{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:22px;
+    padding:22px 22px 24px;
+    position:relative;
+    min-width:0;
+    min-height:0;
+  }
+  .panel-label{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    align-self:flex-start;
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:0.04em;
+    padding:7px 16px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .panel-label .icon{
+    font-size:18px;
+    line-height:1;
+  }
+  .panel.before .panel-label{
+    background:var(--red-soft);
+    color:#ff8080;
+    border:1px solid rgba(239,68,68,0.35);
+  }
+  .panel.after .panel-label{
+    background:var(--green-soft);
+    color:#6ee7a3;
+    border:1px solid rgba(34,197,94,0.35);
+  }
+
+  /* Terminal window */
+  .terminal{
+    background:var(--term-bg);
+    border:1px solid var(--term-border);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 20px 40px -20px rgba(0,0,0,0.6);
+    flex-shrink:0;
+  }
+  .term-titlebar{
+    background:var(--term-titlebar);
+    display:flex;
+    align-items:center;
+    padding:10px 14px;
+    gap:8px;
+    border-bottom:1px solid var(--term-border);
+  }
+  .term-dot{width:11px;height:11px;border-radius:50%;}
+  .term-dot.r{background:#ff5f56;}
+  .term-dot.y{background:#ffbd2e;}
+  .term-dot.g{background:#27c93f;}
+  .term-title{
+    flex:1;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    margin-right:45px;
+  }
+  .term-body{
+    padding:18px 20px 20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:15.5px;
+    line-height:1.62;
+  }
+  .term-response{
+    color:var(--amber);
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .term-response .bullet{margin-right:8px;}
+  .term-quote{color:var(--text-dim);}
+  .term-quote .bar{color:#4a5261; margin-right:2px;}
+  .term-quote .txt{color:#c7cdd6;}
+  .term-link-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:10px;
+  }
+  .term-link{
+    color:var(--link-blue);
+    text-decoration:underline;
+    text-underline-offset:3px;
+    font-weight:600;
+    font-size:15px;
+  }
+  .hint{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12.5px;
+    color:var(--text-dim);
+    font-family:'Inter', sans-serif;
+  }
+  .keycap{
+    font-family:'Inter', sans-serif;
+    font-size:11.5px;
+    font-weight:700;
+    color:#cbd5e1;
+    background:#232833;
+    border:1px solid #383f4c;
+    border-bottom:2px solid #383f4c;
+    border-radius:5px;
+    padding:2px 7px;
+  }
+  .cursor-icon{
+    width:14px;height:14px;
+    display:inline-block;
+    filter:brightness(1.4);
+  }
+
+  /* Connector */
+  .connector{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:10px 0;
+    color:var(--text-dim);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+  }
+  .connector .arrow{font-size:16px; color:var(--text-mid);}
+
+  /* Chat mock */
+  .chat{
+    flex:1;
+    min-height:0;
+    background:#eef0f3;
+    border-radius:16px;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 20px 40px -22px rgba(0,0,0,0.5);
+  }
+  .chat-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .chat-dot{width:8px;height:8px;border-radius:50%;background:#c7cbd1;}
+  .chat-header span{
+    font-size:11px;
+    color:#8a919c;
+    font-weight:600;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  .chat-bubble-row{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .avatar{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#c9cdd4,#9aa1ab);
+    flex-shrink:0;
+  }
+  .bubble{
+    background:#ffffff;
+    border-radius:14px;
+    padding:13px 16px;
+    font-size:15px;
+    line-height:1.6;
+    color:#1f2430;
+    flex:1;
+    border:1px solid #e2e5ea;
+  }
+  .before .bubble{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    color:#3a4150;
+  }
+  .before .bubble .bar{color:#b7bcc4; margin-right:4px;}
+  .composer{
+    margin-top:auto;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#ffffff;
+    border:1px solid #e2e5ea;
+    border-radius:999px;
+    padding:10px 16px;
+    color:#a9afb9;
+    font-size:13.5px;
+  }
+  .composer .send{
+    margin-left:auto;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:#d8dce2;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;
+    color:#fff;
+  }
+
+  /* Notification bubble */
+  .notif{
+    position:absolute;
+    top:64px;
+    right:34px;
+    width:250px;
+    background:#181c24;
+    border:1px solid #313846;
+    border-radius:14px;
+    padding:12px 14px;
+    box-shadow:0 18px 34px -14px rgba(0,0,0,0.7);
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    z-index:5;
+  }
+  .notif-icon{
+    width:30px;height:30px;
+    border-radius:9px;
+    background:linear-gradient(135deg,var(--amber),#c97a1f);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;
+    color:#181c24;
+    flex-shrink:0;
+    font-weight:800;
+  }
+  .notif-text .title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--text-bright);
+    margin-bottom:2px;
+  }
+  .notif-text .body{
+    font-size:12px;
+    color:var(--text-mid);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <header>
+    <h1>Stop pasting <span class="pipe">│</span> pipes from Claude Code</h1>
+    <p><span class="brand">ctrl-clip</span> — one Ctrl+click copies the clean draft</p>
+  </header>
+
+  <div class="panels">
+    <!-- BEFORE -->
+    <div class="panel before">
+      <div class="panel-label"><span class="icon">✗</span> BEFORE</div>
+
+      <div class="terminal">
+        <div class="term-titlebar">
+          <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+          <div class="term-title">claude — 92×24</div>
+        </div>
+        <div class="term-body">
+          <div class="term-response"><span class="bullet">⏺</span>Here's the Slack update:</div>
+          <div class="term-quote"><span class="bar">│</span><span class="txt"> Hi team, the deploy is done ✅</span></div>
+          <div class="term-quote"><span class="bar">│</span></div>
+          <div class="term-quote"><span class="bar">│</span><span class="txt"> - API latency back to normal</span></div>
+          <div class="term-quote"><span class="bar">│</span><span class="txt"> - I'll keep monitoring tonight</span></div>
+        </div>
+      </div>
+
+      <div class="connector"><span>mouse-select &amp; paste</span> <span class="arrow">↓</span></div>
+
+      <div class="chat">
+        <div class="chat-header"><span class="chat-dot"></span><span>message draft</span></div>
+        <div class="chat-bubble-row">
+          <div class="avatar"></div>
+          <div class="bubble">
+            <span class="bar">│</span> Hi team, the deploy is done ✅<br>
+            <span class="bar">│</span><br>
+            <span class="bar">│</span> - API latency back to normal<br>
+            <span class="bar">│</span> - I'll keep monitoring tonight
+          </div>
+        </div>
+        <div class="composer">Reply&nbsp;… <span class="send">➤</span></div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="panel after">
+      <div class="panel-label"><span class="icon">✓</span> AFTER</div>
+
+      <div class="notif">
+        <div class="notif-icon">⧉</div>
+        <div class="notif-text">
+          <div class="title">⧉ Claude</div>
+          <div class="body">⧉ Copied 4 lines / 84 chars</div>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="term-titlebar">
+          <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+          <div class="term-title">claude — 92×24</div>
+        </div>
+        <div class="term-body">
+          <div class="term-response"><span class="bullet">⏺</span>Here's the Slack update:</div>
+          <div class="term-quote"><span class="bar">│</span><span class="txt"> Hi team, the deploy is done ✅</span></div>
+          <div class="term-quote"><span class="bar">│</span></div>
+          <div class="term-quote"><span class="bar">│</span><span class="txt"> - API latency back to normal</span></div>
+          <div class="term-quote"><span class="bar">│</span><span class="txt"> - I'll keep monitoring tonight</span></div>
+          <div class="term-link-row">
+            <a class="term-link">⧉ ctrl + click</a>
+            <span class="hint"><span class="keycap">Ctrl</span>+<svg class="cursor-icon" viewBox="0 0 16 16" fill="#cbd5e1"><path d="M2 1l11 5.2-4.6 1.3 3 5-1.7 1-3-5-3.2 3.4z"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="connector"><span>ctrl+click copies</span> <span class="arrow">↓</span></div>
+
+      <div class="chat">
+        <div class="chat-header"><span class="chat-dot"></span><span>message draft</span></div>
+        <div class="chat-bubble-row">
+          <div class="avatar"></div>
+          <div class="bubble">
+            Hi team, the deploy is done ✅<br><br>
+            - API latency back to normal<br>
+            - I'll keep monitoring tonight
+          </div>
+        </div>
+        <div class="composer">Reply&nbsp;… <span class="send">➤</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

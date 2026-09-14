@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ctrl-clip - linkedin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0a0c10;
+    --bg-1:#12151c;
+    --panel-bg:rgba(255,255,255,0.03);
+    --panel-border:rgba(255,255,255,0.08);
+    --term-bg:#0b0e14;
+    --term-border:#262b36;
+    --term-titlebar:#1a1e27;
+    --text-dim:#5b6472;
+    --text-mid:#9aa4b2;
+    --text-bright:#eef1f5;
+    --red:#ef4444;
+    --red-soft:rgba(239,68,68,0.13);
+    --green:#22c55e;
+    --green-soft:rgba(34,197,94,0.13);
+    --amber:#e8a33d;
+    --link-blue:#5b9dff;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    width:1080px;height:1350px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(232,163,61,0.08), transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(91,157,255,0.07), transparent 40%),
+      linear-gradient(170deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    font-family:'Inter', sans-serif;
+    color:var(--text-bright);
+  }
+  .stage{
+    width:1080px;height:1350px;
+    box-sizing:border-box;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    padding:44px 48px 30px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:26px;
+  }
+  header h1{
+    margin:0 0 12px;
+    font-size:46px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    line-height:1.15;
+    color:var(--text-bright);
+  }
+  header h1 .pipe{
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+  }
+  header p{
+    margin:0;
+    font-size:23px;
+    color:var(--text-mid);
+    font-weight:500;
+  }
+  header p .brand{
+    color:var(--amber);
+    font-weight:700;
+  }
+
+  .sections{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .section{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    background:var(--panel-bg);
+    border:1px solid var(--panel-border);
+    border-radius:26px;
+    padding:26px 28px 28px;
+    position:relative;
+  }
+  .section-label{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    align-self:flex-start;
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:0.04em;
+    padding:9px 22px;
+    border-radius:999px;
+    margin-bottom:18px;
+  }
+  .section-label .icon{font-size:24px; line-height:1;}
+  .section.before .section-label{
+    background:var(--red-soft);
+    color:#ff8f8f;
+    border:1px solid rgba(239,68,68,0.38);
+  }
+  .section.after .section-label{
+    background:var(--green-soft);
+    color:#7ceab0;
+    border:1px solid rgba(34,197,94,0.38);
+  }
+
+  .content-row{
+    flex:1;
+    min-height:0;
+    display:flex;
+    align-items:stretch;
+    gap:18px;
+  }
+  .content-row .terminal{flex:1.08; min-width:0; align-self:center;}
+  .content-row .chat{flex:1; min-width:0;}
+  .row-arrow{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--text-mid);
+    font-size:26px;
+    flex-shrink:0;
+    width:28px;
+  }
+
+  .divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    padding:22px 0;
+  }
+  .divider .line{flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);}
+  .divider .badge{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:linear-gradient(135deg, var(--amber), #c97a1f);
+    color:#181c24;
+    font-weight:800;
+    font-size:20px;
+    padding:9px 22px;
+    border-radius:999px;
+    white-space:nowrap;
+    box-shadow:0 10px 24px -8px rgba(232,163,61,0.5);
+  }
+
+  .terminal{
+    background:var(--term-bg);
+    border:1px solid var(--term-border);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 20px 40px -20px rgba(0,0,0,0.6);
+  }
+  .term-titlebar{
+    background:var(--term-titlebar);
+    display:flex;
+    align-items:center;
+    padding:12px 16px;
+    gap:9px;
+    border-bottom:1px solid var(--term-border);
+  }
+  .term-dot{width:13px;height:13px;border-radius:50%;}
+  .term-dot.r{background:#ff5f56;}
+  .term-dot.y{background:#ffbd2e;}
+  .term-dot.g{background:#27c93f;}
+  .term-title{
+    flex:1;
+    text-align:center;
+    font-size:15px;
+    color:var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    margin-right:55px;
+  }
+  .term-body{
+    padding:18px 20px 20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:15.5px;
+    line-height:1.6;
+    white-space:nowrap;
+  }
+  .term-response{
+    color:var(--amber);
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .term-response .bullet{margin-right:9px;}
+  .term-quote .bar{color:#4a5261; margin-right:2px;}
+  .term-quote .txt{color:#c7cdd6;}
+  .term-link-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:12px;
+  }
+  .term-link{
+    color:var(--link-blue);
+    text-decoration:underline;
+    text-underline-offset:3px;
+    font-weight:600;
+    font-size:15.5px;
+  }
+  .hint{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-size:13px;
+    color:var(--text-dim);
+    font-family:'Inter', sans-serif;
+  }
+  .keycap{
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color:#cbd5e1;
+    background:#232833;
+    border:1px solid #383f4c;
+    border-bottom:2px solid #383f4c;
+    border-radius:6px;
+    padding:3px 8px;
+  }
+  .cursor-icon{width:16px;height:16px; display:inline-block; filter:brightness(1.4);}
+
+  .chat{
+    flex:1;
+    min-height:0;
+    background:#eef0f3;
+    border-radius:18px;
+    padding:20px 22px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+    box-shadow:0 20px 40px -22px rgba(0,0,0,0.5);
+  }
+  .chat-header{display:flex; align-items:center; gap:9px; margin-bottom:14px;}
+  .chat-dot{width:9px;height:9px;border-radius:50%;background:#c7cbd1;}
+  .chat-header span{
+    font-size:13px;
+    color:#8a919c;
+    font-weight:600;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+  }
+  .chat-bubble-row{display:flex; align-items:flex-start; gap:12px;}
+  .avatar{
+    width:40px;height:40px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#c9cdd4,#9aa1ab);
+    flex-shrink:0;
+  }
+  .bubble{
+    background:#ffffff;
+    border-radius:16px;
+    padding:14px 17px;
+    font-size:16.5px;
+    line-height:1.55;
+    color:#1f2430;
+    flex:1;
+    border:1px solid #e2e5ea;
+    white-space:nowrap;
+  }
+  .before .bubble{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14.5px;
+    color:#3a4150;
+  }
+  .before .bubble .bar{color:#b7bcc4; margin-right:5px;}
+
+  .notif{
+    position:absolute;
+    top:88px;
+    right:30px;
+    width:290px;
+    background:#181c24;
+    border:1px solid #313846;
+    border-radius:16px;
+    padding:14px 16px;
+    box-shadow:0 18px 34px -14px rgba(0,0,0,0.7);
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    z-index:5;
+  }
+  .notif-icon{
+    width:34px;height:34px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--amber),#c97a1f);
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;
+    color:#181c24;
+    flex-shrink:0;
+    font-weight:800;
+  }
+  .notif-text .title{font-size:15px; font-weight:700; color:var(--text-bright); margin-bottom:3px;}
+  .notif-text .body{font-size:13.5px; color:var(--text-mid);}
+
+  footer{
+    text-align:center;
+    margin-top:20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:16px;
+    color:var(--text-dim);
+    letter-spacing:0.02em;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <header>
+    <h1>Stop pasting <span class="pipe">│</span> pipes<br>from Claude Code</h1>
+    <p><span class="brand">ctrl-clip</span> — one Ctrl+click copies the clean draft</p>
+  </header>
+
+  <div class="sections">
+    <!-- BEFORE -->
+    <div class="section before">
+      <div class="section-label"><span class="icon">✗</span> BEFORE</div>
+
+      <div class="content-row">
+        <div class="terminal">
+          <div class="term-titlebar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <div class="term-title">claude — 92×24</div>
+          </div>
+          <div class="term-body">
+            <div class="term-response"><span class="bullet">⏺</span>Here's the Slack update:</div>
+            <div class="term-quote"><span class="bar">│</span><span class="txt"> Hi team, the deploy is done ✅</span></div>
+            <div class="term-quote"><span class="bar">│</span></div>
+            <div class="term-quote"><span class="bar">│</span><span class="txt"> - API latency back to normal</span></div>
+            <div class="term-quote"><span class="bar">│</span><span class="txt"> - I'll keep monitoring tonight</span></div>
+          </div>
+        </div>
+
+        <div class="row-arrow">➜</div>
+
+        <div class="chat">
+          <div class="chat-header"><span class="chat-dot"></span><span>message draft</span></div>
+          <div class="chat-bubble-row">
+            <div class="avatar"></div>
+            <div class="bubble">
+              <span class="bar">│</span> Hi team, the deploy is done ✅<br>
+              <span class="bar">│</span><br>
+              <span class="bar">│</span> - API latency back to normal<br>
+              <span class="bar">│</span> - I'll keep monitoring tonight
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="line"></div>
+      <div class="badge">⧉ ctrl-clip fixes this</div>
+      <div class="line"></div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="section after">
+      <div class="section-label"><span class="icon">✓</span> AFTER</div>
+
+      <div class="notif">
+        <div class="notif-icon">⧉</div>
+        <div class="notif-text">
+          <div class="title">⧉ Claude</div>
+          <div class="body">⧉ Copied 4 lines / 84 chars</div>
+        </div>
+      </div>
+
+      <div class="content-row">
+        <div class="terminal">
+          <div class="term-titlebar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <div class="term-title">claude — 92×24</div>
+          </div>
+          <div class="term-body">
+            <div class="term-response"><span class="bullet">⏺</span>Here's the Slack update:</div>
+            <div class="term-quote"><span class="bar">│</span><span class="txt"> Hi team, the deploy is done ✅</span></div>
+            <div class="term-quote"><span class="bar">│</span></div>
+            <div class="term-quote"><span class="bar">│</span><span class="txt"> - API latency back to normal</span></div>
+            <div class="term-quote"><span class="bar">│</span><span class="txt"> - I'll keep monitoring tonight</span></div>
+            <div class="term-link-row">
+              <a class="term-link">⧉ ctrl + click</a>
+              <span class="hint"><span class="keycap">Ctrl</span>+<svg class="cursor-icon" viewBox="0 0 16 16" fill="#cbd5e1"><path d="M2 1l11 5.2-4.6 1.3 3 5-1.7 1-3-5-3.2 3.4z"/></svg></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row-arrow">➜</div>
+
+        <div class="chat">
+          <div class="chat-header"><span class="chat-dot"></span><span>message draft</span></div>
+          <div class="chat-bubble-row">
+            <div class="avatar"></div>
+            <div class="bubble">
+              Hi team, the deploy is done ✅<br><br>
+              - API latency back to normal<br>
+              - I'll keep monitoring tonight
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>github.com/geanruca/ctrl-clip</footer>
+</div>
+</body>
+</html>
