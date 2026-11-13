@@ -3,6 +3,13 @@
 # artifacts that paste badly: blockquote markers, box-drawing bars, Claude bullets.
 set -euo pipefail
 
+# macOS pbcopy decodes stdin with the locale's charset and falls back to MacRoman when no
+# UTF-8 locale is set (Claude Code's Bash tool runs with LANG empty), so "côté" pastes as
+# "c√¥t√©". Force a UTF-8 locale so pbcopy, sed and `wc -m` all read UTF-8.
+if [[ "$(uname -s)" == Darwin && "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" != *[Uu][Tt][Ff]-8* ]]; then
+  export LC_ALL=en_US.UTF-8
+fi
+
 input=$(if [[ $# -gt 0 ]]; then cat -- "$1"; else cat; fi)
 
 clean=$(printf '%s\n' "$input" \

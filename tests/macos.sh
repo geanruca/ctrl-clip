@@ -11,6 +11,7 @@ mkdir "$sandbox/bin"
 cat > "$sandbox/bin/pbcopy" <<EOF
 #!/bin/sh
 cat > "$sandbox/clipboard"
+printf '%s' "\${LC_ALL:-\${LC_CTYPE:-\${LANG:-}}}" > "$sandbox/locale"
 EOF
 chmod +x "$sandbox/bin/pbcopy"
 
@@ -44,4 +45,15 @@ run "bash 3.2, file argument" /bin/bash "$CLIP" "$DRAFT"
 run "bash 3.2, stdin" /bin/bash -c '/bin/bash "$CLIP" < "$DRAFT"'
 run "zsh, pipe" zsh -f -c 'cat "$DRAFT" | "$CLIP"'
 run "/usr/bin/env bash" "$CLIP" "$DRAFT"
+
+# The real pbcopy reads stdin as MacRoman unless the locale is UTF-8, and Claude Code's
+# Bash tool runs with no locale at all: clip.sh must hand pbcopy a UTF-8 locale.
+rm -f "$sandbox/locale"
+if env -u LC_ALL -u LC_CTYPE -u LANG /bin/bash "$CLIP" "$DRAFT" >/dev/null 2>&1 \
+  && case $(cat "$sandbox/locale" 2>/dev/null) in *[Uu][Tt][Ff]-8) true ;; *) false ;; esac; then
+  echo "  ✓ no locale set: pbcopy runs under $(cat "$sandbox/locale")"
+else
+  echo "  ✗ no locale set: pbcopy ran under '$(cat "$sandbox/locale" 2>/dev/null)', accents would paste as MacRoman"
+  failures=$((failures + 1))
+fi
 [ "$failures" -eq 0 ]
